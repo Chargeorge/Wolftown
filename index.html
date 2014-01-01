@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="/Phaser/phaser/build/phaser.min.js"></script>
+		
+	</head>
+    <body>
+
+    <script type="text/javascript">
+
+    window.onload = function() {
+
+        var game = new Phaser.Game(1200, 720, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+        function preload () {
+
+            game.load.image('background', 'assets/village.jpg');
+
+			//Load card info
+			
+			game.load.image('card_CardBack', 'assets/cardback.png');
+			game.load.image('card_DefenseIcon.png', 'assets/defenseicon.png');
+			game.load.image('card_SwayIcon.png', 'assets/swayicon.png');
+			game.load.image('card_VPIcon.png', 'assets/vpicon.png');
+			game.load.image('card_BiteIcon.png', 'assets/biteicon.png');
+			
+			
+        }
+		
+		function createCard(name, vpVal, biteVal, swayVal, specialText, Image){
+			//102,132
+			var returnableCard =  game.add.group();
+			var cardBackGround = returnableCard.create(0,0, 'card_CardBack');
+			game.add.text(5,5, name, { font:"bold 12pt Arial", fill: '#000' }, returnableCard);
+			//var vpVal = returnableCard.create(10,10)
+		}
+
+        function create () {
+
+            var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+            logo.scale.x = .13;
+			logo.scale.y = .13;
+			logo.anchor.setTo(0.5, 0.5);
+
+			createCard("Yo gabba gabba");
+        }
+		
+		function update(){
+			
+		}
+
+    };
+
+    </script>
+
+    </body>
+</html>
