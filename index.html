@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <title>Wolftown!</title>
-        <script src="/Phaser/phaser/build/phaser.min.js"></script>
+        <script src="JS/phaser.min.js"></script>
 		
 	</head>
     <body>
@@ -13,27 +13,70 @@
     window.onload = function() {
 
         var game = new Phaser.Game(1200, 720, Phaser.AUTO, '', { preload: preload, create: create, update: update });
-
-        function preload () {
+		var bitePixelOffsetStart = {x:20, y:5};
+        var bottomPixelOffsetStart = {x:20, y:20};
+		var defPixelOffsetStart = {x:5, y:20};
+        var cardIconPadding = 2;
+		function preload () {
 
             game.load.image('background', 'assets/village.jpg');
 
 			//Load card info
 			
 			game.load.image('card_CardBack', 'assets/cardback.png');
-			game.load.image('card_DefenseIcon.png', 'assets/defenseicon.png');
-			game.load.image('card_SwayIcon.png', 'assets/swayicon.png');
-			game.load.image('card_VPIcon.png', 'assets/vpicon.png');
-			game.load.image('card_BiteIcon.png', 'assets/biteicon.png');
+			game.load.image('card_DefenseIcon', 'assets/defenseicon.png');
+			game.load.image('card_SwayIcon', 'assets/swayicon.png');
+			game.load.image('card_VPIcon', 'assets/vpicon.png');
+			game.load.image('card_BiteIcon', 'assets/biteicon.png');
 			
 			
         }
 		
-		function createCard(name, vpVal, biteVal, swayVal, specialText, Image){
+		function createCard(name, vpVal, biteVal, swayVal,defVal, specialText, Image){
 			//102,132
 			var returnableCard =  game.add.group();
 			var cardBackGround = returnableCard.create(0,0, 'card_CardBack');
-			game.add.text(5,5, name, { font:"bold 12pt Arial", fill: '#000' }, returnableCard);
+			cardBackGround.scale.x = 2;
+			cardBackGround.scale.y = 2;
+			game.add.text(5,5, name, { font:"bold 8pt Arial", fill: '#000' }, returnableCard);
+			var currentX = bitePixelOffsetStart.x;
+			
+			
+			for (var i = 0; i < biteVal; i++){
+				var biteSprtTemp = returnableCard.create(cardBackGround.width - currentX,bitePixelOffsetStart.y, 'card_BiteIcon');
+				currentX+=(biteSprtTemp.width+cardIconPadding);
+			}
+			currentX-=(biteSprtTemp.width-cardIconPadding);
+			if(swayVal > 0 && biteVal > 0){
+				game.add.text(cardBackGround.width -currentX,bitePixelOffsetStart.y, '/', { font:"bold 12pt Arial", fill: '#000' }, returnableCard);
+				currentX+=20;
+			}
+			for (var i = 0; i < swayVal; i++){
+				var swaySprtTemp = returnableCard.create(cardBackGround.width -currentX,bitePixelOffsetStart.y, 'card_SwayIcon');
+				currentX+=(swaySprtTemp.width+cardIconPadding);
+			}
+			currentX =bitePixelOffsetStart.x; 
+			for (var i = 0; i < vpVal; i++){
+				var vpSprtTemp = returnableCard.create(cardBackGround.width- currentX,cardBackGround.height-bottomPixelOffsetStart.y, 'card_VPIcon');
+				currentX+=(swaySprtTemp.width+cardIconPadding);
+			}
+			currentX = defPixelOffsetStart.x;
+			for (var i = 0; i < defVal; i++){
+				var defSprtTemp = returnableCard.create( currentX,cardBackGround.height-bottomPixelOffsetStart.y, 'card_DefenseIcon');
+				currentX+=(swaySprtTemp.width-cardIconPadding);
+			}
+			
+			//Create text area
+			var textBackGround = returnableCard.create(20,130, 'card_CardBack');
+			textBackGround.scale.y = .75;
+			textBackGround.scale.x = 1.7;
+			var textBreakPoint = 30;
+			var newText = specialText;
+			for(var i = 0; i<specialText.length / textBreakPoint; i++){
+				newText = newText.splice(textBreakPoint+i*textBreakPoint, 0, "\n");
+			}
+			var textObj = game.add.text(25,135, newText, { font:"bold 8pt Arial", fill: '#000' }, returnableCard);
+			
 			
 			//var vpVal = returnableCard.create(10,10)
 		}
@@ -45,7 +88,7 @@
 			logo.scale.y = .13;
 			logo.anchor.setTo(0.5, 0.5);
 
-			createCard("Yo gabba gabba");
+			createCard("Yo gabba gabba",2,2,2,4,"SIDEKICK POWER:" +"AMAZEBALLS");
         }
 		
 		function update(){
@@ -53,7 +96,9 @@
 		}
 
     };
-
+	String.prototype.splice = function( idx, rem, s ) {
+		return (this.slice(0,idx) + s + this.slice(idx + Math.abs(rem)));
+	};
     </script>
 
     </body>
